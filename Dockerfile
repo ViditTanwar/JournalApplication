@@ -8,6 +8,6 @@ RUN chmod +x mvnw
 
 RUN ./mvnw clean package -DskipTests
 
-EXPOSE ${PORT:8081}
+EXPOSE 8081
 
 CMD ["sh", "-c", "java -Dserver.port=${PORT} -jar target/*.jar"]
