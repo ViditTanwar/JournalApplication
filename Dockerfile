@@ -1,13 +1,7 @@
 FROM eclipse-temurin:21-jdk
-
 WORKDIR /app
+COPY target/JournalApp-0.0.1-SNAPSHOT.jar app.jar
 
-COPY . .
+ENV SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
 
-RUN chmod +x mvnw
-
-RUN ./mvnw clean package -DskipTests
-
-EXPOSE 8080
-
-CMD ["sh", "-c", "java -Dserver.port=${PORT} -jar target/*.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
