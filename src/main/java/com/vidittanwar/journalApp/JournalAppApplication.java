@@ -2,6 +2,8 @@ package com.vidittanwar.journalApp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
@@ -14,16 +16,21 @@ public class JournalAppApplication {
 
 	public static void main(String[] args) {
 
-		String uri = System.getenv("SPRING_DATA_MONGODB_URI");
-		System.out.println("=== ENV CHECK ===");
-		System.out.println("Value is null? " + (uri == null));
-		if (uri != null) {
-			System.out.println("Length: " + uri.length());
-			System.out.println("Starts with: " + uri.substring(0, Math.min(20, uri.length())));
-		}
-		System.out.println("=================");
+		SpringApplication app = new SpringApplication(JournalAppApplication.class);
 
-		SpringApplication.run(JournalAppApplication.class, args);
+		app.addListeners((ApplicationListener<ApplicationEnvironmentPreparedEvent>) event -> {
+			String uri = event.getEnvironment().getProperty("spring.data.mongodb.uri");
+			System.out.println("=== SPRING ENV CHECK ===");
+			if (uri == null) {
+				System.out.println("spring.data.mongodb.uri => NULL");
+			} else {
+				System.out.println("Length: " + uri.length());
+				System.out.println("Starts with: " + uri.substring(0, Math.min(20, uri.length())));
+			}
+			System.out.println("=========================");
+		});
+
+		app.run(args);
 	}
 
 
